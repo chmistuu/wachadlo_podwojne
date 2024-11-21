@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonApplication1", "PythonApplication1\PythonApplication1.pyproj", "{9C4E20E3-F766-47C5-A13A-941EC2021625}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "wachadło", "wachadło\wachadło.pyproj", "{16C786CB-8176-4A5A-B06C-3E5563A514C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C4E20E3-F766-47C5-A13A-941EC2021625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C4E20E3-F766-47C5-A13A-941EC2021625}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16C786CB-8176-4A5A-B06C-3E5563A514C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16C786CB-8176-4A5A-B06C-3E5563A514C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4790CD6A-DE72-4590-B491-BD6557B10A6C}
+	EndGlobalSection
+EndGlobal
