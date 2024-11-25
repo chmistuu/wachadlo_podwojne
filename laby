@@ -1,0 +1,60 @@
+import sympy
+import math
+import scipy
+
+# zad 1 a)
+def cal_nieoz():
+    x = sympy.symbols('x')
+    calka_nieoznaczona = sympy.simplify(sympy.integrate(sympy.sin(x)**2 * sympy.exp(-5*x), x))
+    print("Całka nieoznaczona po uproszczeniu = ", calka_nieoznaczona)
+cal_nieoz()
+# zad 1 b)
+def cal_oznacz():
+    x = sympy.symbols('x')
+    m= sympy.symbols('m')
+    l = sympy.symbols('l')
+    moment_bezwlad = (m/l)*sympy.integrate(x**2, (x, (-l/2), (l/2)))
+    print("I = ",moment_bezwlad)
+cal_oznacz()
+# zad 1 c)
+def energ_pot_elek():
+    k, q = sympy.symbols('k, q')
+    r = sympy.symbols('r')
+
+    F = k*(q*q)/r**2
+    U = -sympy.integrate(F,(r,sympy.oo,1))
+    print(U)
+energ_pot_elek()
+
+#zad 2
+def rozniczkowanie():
+    m = sympy.symbols('m')
+    t = sympy.symbols('t')
+    k = sympy.symbols('k')
+    F_0 = sympy.symbols('F_0')
+    x = sympy.Function('x')(t)
+    rozniczka = m*(x.diff(t, 2)) + k*x - F_0
+    sympy.pprint(sympy.dsolve(rozniczka, x))
+    print()
+rozniczkowanie()
+#zad 3
+def zderzenie():
+    vp = sympy.symbols('vp')
+    vk = sympy.symbols('vk')
+    h = sympy.symbols('h')
+    g = sympy.symbols('g')
+    t = sympy.symbols('t')
+    h_k = h - vk*t - (1/2)*g*t**2
+    h_p = vp*t
+    zderzenie = sympy.Eq(h_k, h_p)
+    czas_zderzenia = sympy.solve(zderzenie, t)
+    return czas_zderzenia
+wynik_czas_zderzenia = zderzenie()
+print(f"Czas zderzenia kulki z platformą: {wynik_czas_zderzenia}")
+
+#zad 4
+def zadanie4(x):
+   return(sympy.exp(-sympy.sin(x)))
+result, error = scipy.integrate.quad(zadanie4,1,5)
+print("Wynik: ", result, "błąd numeryczny: ", error)
+
