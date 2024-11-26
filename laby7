@@ -1,3 +1,9 @@
+import numpy as np
+import sympy
+import math
+import scipy
+from scipy.misc import derivative
+from sympy.strategies import minimize
 def droga(t):
     return sympy.exp(-t**2)
 t_wart = np.linspace(0, 3 , 3)
