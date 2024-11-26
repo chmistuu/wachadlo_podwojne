@@ -1,0 +1,18 @@
+def droga(t):
+    return sympy.exp(-t**2)
+t_wart = np.linspace(0, 3 , 3)
+s_wart = droga(t_wart)
+v_wart = [derivative(droga, t, dx=1) for t in t_wart]
+a_wart = [derivative(droga, t, dx=1, n=2) for t in t_wart]
+print(f"v: {v_wart}, a:{a_wart}")
+#zad6
+
+def temp(x):
+    x1, x2 = x
+    return ((x2 + 2.5)**2 - (x1 - 1)**2) * np.sin(x1**2 + x2**2)
+granice = [(0, 0.5), (0, 3)]
+x0=(0.25, 1.5)
+wyniktemp = minimize(temp, x0, bounds=granice)
+mintemp, minkordy = wyniktemp.fun, wyniktemp.x
+print("Minimalna temperatura:", mintemp)
+print("Współrzędne minimum:", minkordy)
