@@ -1,44 +1,136 @@
+from multiprocessing.managers import Value
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+class sprawdzanie:
+    def masa1():
+        while True:
+            try:
+                val = float(input("Podaj masę m1: "))
+                if val>0:
+                    return val
+                else:
+                    print("wartość musi być dodatnia")
+            except ValueError:
+                print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
 
-m1 = 1.0
-m2 = 1.0
-L1 = 1.0
-L2 = 1.0
-theta1 = 90
-theta2 = 90
-g=9.81
+    def masa2():
+        while True:
+            try:
+                val = float(input("Podaj masę m2: "))
+                if val>0:
+                    return val
+                else:
+                    print("wartość musi być dodatnia")
+            except ValueError:
+                print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
+
+    def dlugosc1():
+        while True:
+            try:
+                val = float(input("Podaj długość L1: "))
+                if val>0:
+                    return val
+                else:
+                    print("wartość musi być dodatnia")
+            except ValueError:
+                print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
+
+    def dlugosc2():
+        while True:
+            try:
+                val = float(input("Podaj długość L2: "))
+                if val>0:
+                    return val
+                else:
+                    print("wartość musi być dodatnia")
+            except ValueError:
+                print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
+
+    def kat1():
+        while True:
+            try:
+                val = float(input("Podaj wychylenie pierwszego wahadła: "))
+                return val
+            except ValueError:
+                print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
+
+    def kat2():
+        while True:
+            try:
+                val = float(input("Podaj wychylenie drugiego wahadła: "))
+                return val
+            except ValueError:
+                print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
+
+    def gravity():
+        while True:
+            try:
+                val = float(input("Podaj siłę grawitacji: "))
+                if val>0:
+                    return val
+                else:
+                    print("wartość musi być dodatnia")
+            except ValueError:
+                print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
+
+m1 = sprawdzanie.masa1()
+m2 = sprawdzanie.masa2()
+L1 = sprawdzanie.dlugosc1()
+L2 = sprawdzanie.dlugosc2()
+theta1 = sprawdzanie.kat1()
+theta2 = sprawdzanie.kat2()
+g=sprawdzanie.gravity()
 dt = 0.001
 #okres czasu to ile razy dt, dt jest w sekundach
 def liczenie_a(theta1, theta2, okres_czasu=10):
     theta1 = np.radians(theta1)  
     theta2 = np.radians(theta2)
     omega1, omega2 = 0.0, 0.0
+    theta1_wart, theta2_wart = [theta1], [theta2]
+    x1_wart, x2_wart, y1_wart, y2_wart = [], [], [], []
     for i in range(okres_czasu):
         delta = theta2 - theta1
-        denom1 = (m1 + m2) * L1 - m2 * L1 * np.cos(delta) ** 2
-        denom2 = (L2 / L1) * denom1
+        mian1 = (m1 + m2) * L1 - m2 * L1 * np.cos(delta) ** 2
+        mian2 = (L2 / L1) * mian1
 
         a1 = (m2 * L1 * omega1 ** 2 * np.sin(delta) * np.cos(delta) +
               m2 * g * np.sin(theta2) * np.cos(delta) +
               m2 * L2 * omega2 ** 2 * np.sin(delta) -
-              (m1 + m2) * g * np.sin(theta1)) / denom1
+              (m1 + m2) * g * np.sin(theta1)) / mian1
 
         a2 = (-m2 * L2 * omega2 ** 2 * np.sin(delta) * np.cos(delta) +
               (m1 + m2) * g * np.sin(theta1) * np.cos(delta) -
               (m1 + m2) * L1 * omega1 ** 2 * np.sin(delta) -
-              (m1 + m2) * g * np.sin(theta2)) / denom2
+              (m1 + m2) * g * np.sin(theta2)) / mian2
         omega1 += a1 * dt
         omega2 += a2 * dt
         theta1 += omega1 * dt
         theta2 += omega2 * dt
+        x1 = L1*np.sin(theta1)*dt
+        y1 = -L1*np.cos(theta1)*dt
+        x2 = x1 + L2*np.sin(theta2)*dt
+        y2 = y1-L2*np.sin(theta2)*dt
+        
+        x1_wart.append(x1)
+        x2_wart.append(x2)
+        y1_wart.append(y1)
+        y2_wart.append(y2)
+        
+        theta1_wart.append(theta1)
+        theta2_wart.append(theta2)
 
-    return omega1, omega2, a1, a2
+    return omega1, omega2, a1, a2, x1_wart, x2_wart, y1_wart, y2_wart
 
-omega1, omega2, a1, a2 = liczenie_a(theta1, theta2)
+omega1, omega2, a1, a2, x1_wart, x2_wart, y1_wart, y2_wart = liczenie_a(theta1, theta2)
 
-print(f"omega1: {omega1}, a1: {a1}")
-print(f"omega2: {omega2}, a2: {a2}")
+print(f"omega1: {omega1}, a1: {a1}, x1: {x1_wart}, y1: {y1_wart}")
+print(f"omega2: {omega2}, a2: {a2}, x2: {x2_wart}, y2: {y2_wart}")
+
+def wykres():
+    fig, ax = plt.subplots()
+    ax.plot(x1_wart,y1_wart,x2_wart,y2_wart)
+    ax.set_xlim(-L1-L2-1,L1+L2+1)
+    ax.set_ylim(-L1-L2-1,L1+L2+1)
+    return plt.show()
+wykres()
 #po czasie okres_czasu*10 wychodzi wynik
-
