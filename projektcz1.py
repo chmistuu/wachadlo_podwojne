@@ -126,7 +126,7 @@ x1, x2, y1, y2 = liczenie_a(m1, m2, g, L1, L2, theta1, theta2)
 fig, ax = plt.subplots()
 ax.set_xlim(-L1-L2-1,L1+L2+1)
 ax.set_ylim(-L1-L2-1,L1+L2+1)
-linia, = ax.plot([], [], 'o-', lw=2)
+linia, = ax.plot([], [], 'o-', lw=2) #musi byc przecinek bo linia, tworzy obj Line2D używany w matplitlib i funcanim - bez "," tworzy sie lista a nie obj do animacji
 trajektoria, = ax.plot([], [], 'r-', lw=0.5, alpha=0.5)
 
 def init():
