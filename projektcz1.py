@@ -1,6 +1,8 @@
 from multiprocessing.managers import Value
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
 class sprawdzanie:
     def masa1():
         while True:
@@ -80,9 +82,8 @@ L2 = sprawdzanie.dlugosc2()
 theta1 = sprawdzanie.kat1()
 theta2 = sprawdzanie.kat2()
 g=sprawdzanie.gravity()
-dt = 0.001
 #okres czasu to ile razy dt, dt jest w sekundach
-def liczenie_a(theta1, theta2, okres_czasu=10):
+def liczenie_a(m1, m2, g, L1, L2, theta1, theta2, okres_czasu=100000, dt = 0.01):
     theta1 = np.radians(theta1)  
     theta2 = np.radians(theta2)
     omega1, omega2 = 0.0, 0.0
@@ -106,10 +107,10 @@ def liczenie_a(theta1, theta2, okres_czasu=10):
         omega2 += a2 * dt
         theta1 += omega1 * dt
         theta2 += omega2 * dt
-        x1 = L1*np.sin(theta1)*dt
-        y1 = -L1*np.cos(theta1)*dt
-        x2 = x1 + L2*np.sin(theta2)*dt
-        y2 = y1-L2*np.sin(theta2)*dt
+        x1 = L1*np.sin(theta1)
+        y1 = -L1*np.cos(theta1)
+        x2 = x1 + L2*np.sin(theta2)
+        y2 = y1-L2*np.cos(theta2)
         
         x1_wart.append(x1)
         x2_wart.append(x2)
@@ -119,18 +120,27 @@ def liczenie_a(theta1, theta2, okres_czasu=10):
         theta1_wart.append(theta1)
         theta2_wart.append(theta2)
 
-    return omega1, omega2, a1, a2, x1_wart, x2_wart, y1_wart, y2_wart
+    return x1_wart, x2_wart, y1_wart, y2_wart
 
-omega1, omega2, a1, a2, x1_wart, x2_wart, y1_wart, y2_wart = liczenie_a(theta1, theta2)
+x1, x2, y1, y2 = liczenie_a(m1, m2, g, L1, L2, theta1, theta2)
+fig, ax = plt.subplots()
+ax.set_xlim(-L1-L2-1,L1+L2+1)
+ax.set_ylim(-L1-L2-1,L1+L2+1)
+linia, = ax.plot([], [], 'o-', lw=2)
+trajektoria, = ax.plot([], [], 'r-', lw=0.5, alpha=0.5)
 
-print(f"omega1: {omega1}, a1: {a1}, x1: {x1_wart}, y1: {y1_wart}")
-print(f"omega2: {omega2}, a2: {a2}, x2: {x2_wart}, y2: {y2_wart}")
+def init():
+    linia.set_data([], [])
+    trajektoria.set_data([], [])
+    return linia, trajektoria
 
-def wykres():
-    fig, ax = plt.subplots()
-    ax.plot(x1_wart,y1_wart,x2_wart,y2_wart)
-    ax.set_xlim(-L1-L2-1,L1+L2+1)
-    ax.set_ylim(-L1-L2-1,L1+L2+1)
-    return plt.show()
-wykres()
-#po czasie okres_czasu*10 wychodzi wynik
+def update(frame):
+    x = [0, x1[frame], x2[frame]]
+    y = [0, y1[frame], y2[frame]]
+    line.set_data(x, y)
+    trajektoria.set_data(x2[:frame], y2[:frame])
+    return linia, trajektoria
+
+ani = FuncAnimation(fig, update, frames=len(x1), init_func=init, blit=True, interval=0.001)
+
+plt.show()
