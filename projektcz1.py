@@ -137,7 +137,7 @@ def init():
 def update(frame):
     x = [0, x1[frame], x2[frame]]
     y = [0, y1[frame], y2[frame]]
-    line.set_data(x, y)
+    linia.set_data(x, y)
     trajektoria.set_data(x2[:frame], y2[:frame])
     return linia, trajektoria
 
