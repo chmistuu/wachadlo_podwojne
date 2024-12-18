@@ -1,199 +1,167 @@
-from tkinter import *
 from multiprocessing.managers import Value
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-
-def matrix():
-    class sprawdzanie:
-        def masa1():
-            while True:
-                try:
-                    val = float(input("Podaj masę m1: "))
-                    if val>0:
-                        return val
-                    else:
-                        print("wartość musi być dodatnia")
-                except ValueError:
-                    print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
-
-        def masa2():
-            while True:
-                try:
-                    val = float(input("Podaj masę m2: "))
-                    if val>0:
-                        return val
-                    else:
-                        print("wartość musi być dodatnia")
-                except ValueError:
-                    print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
-
-        def dlugosc1():
-            while True:
-                try:
-                    val = float(input("Podaj długość L1: "))
-                    if val>0:
-                        return val
-                    else:
-                        print("wartość musi być dodatnia")
-                except ValueError:
-                    print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
-
-        def dlugosc2():
-            while True:
-                try:
-                    val = float(input("Podaj długość L2: "))
-                    if val>0:
-                        return val
-                    else:
-                        print("wartość musi być dodatnia")
-                except ValueError:
-                    print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
-
-        def kat1():
-            while True:
-                try:
-                    val = float(input("Podaj wychylenie pierwszego wahadła: "))
-                    return val
-                except ValueError:
-                    print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
-
-        def kat2():
-            while True:
-                try:
-                    val = float(input("Podaj wychylenie drugiego wahadła: "))
-                    return val
-                except ValueError:
-                    print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
-
-        def gravity():
-            while True:
-                try:
-                    val = float(input("Podaj siłę grawitacji: "))
-                    if val>0:
-                        return val
-                    else:
-                        print("wartość musi być dodatnia")
-                except ValueError:
-                    print("Wartość musi być liczbą. Podaj liczbę wiekszą od 0")
+from matplotlib.widgets import Button, TextBox
 
 
-    #okres czasu to ile razy dt, dt jest w sekundach
-    def liczenie_a(m1, m2, g, L1, L2, theta1, theta2, okres_czasu=100000, dt = 0.01):
-        theta1 = np.radians(theta1)  
-        theta2 = np.radians(theta2)
-        omega1, omega2 = 0.0, 0.0
-        theta1_wart, theta2_wart = [theta1], [theta2]
-        x1_wart, x2_wart, y1_wart, y2_wart = [], [], [], []
-        for i in range(okres_czasu):
-            delta = theta2 - theta1
-            mian1 = (m1 + m2) * L1 - m2 * L1 * np.cos(delta) ** 2
-            mian2 = (L2 / L1) * mian1
+#okres czasu to ile razy dt, dt jest w sekundach
+def liczenie_a(m1, m2, g, L1, L2, theta1, theta2, okres_czasu=100000, dt = 0.01):
+    theta1 = np.radians(theta1)  
+    theta2 = np.radians(theta2)
+    omega1, omega2 = 0.0, 0.0
+    theta1_wart, theta2_wart = [theta1], [theta2]
+    x1_wart, x2_wart, y1_wart, y2_wart = [], [], [], []
+    for i in range(okres_czasu):
+        delta = theta2 - theta1
+        mian1 = (m1 + m2) * L1 - m2 * L1 * np.cos(delta) ** 2
+        mian2 = (L2 / L1) * mian1
 
-            a1 = (m2 * L1 * omega1 ** 2 * np.sin(delta) * np.cos(delta) +
-                  m2 * g * np.sin(theta2) * np.cos(delta) +
-                  m2 * L2 * omega2 ** 2 * np.sin(delta) -
-                  (m1 + m2) * g * np.sin(theta1)) / mian1
+        a1 = (m2 * L1 * omega1 ** 2 * np.sin(delta) * np.cos(delta) +
+              m2 * g * np.sin(theta2) * np.cos(delta) +
+              m2 * L2 * omega2 ** 2 * np.sin(delta) -
+              (m1 + m2) * g * np.sin(theta1)) / mian1
 
-            a2 = (-m2 * L2 * omega2 ** 2 * np.sin(delta) * np.cos(delta) +
-                  (m1 + m2) * g * np.sin(theta1) * np.cos(delta) -
-                  (m1 + m2) * L1 * omega1 ** 2 * np.sin(delta) -
-                  (m1 + m2) * g * np.sin(theta2)) / mian2
-            omega1 += a1 * dt
-            omega2 += a2 * dt
-            theta1 += omega1 * dt
-            theta2 += omega2 * dt
-            x1 = L1*np.sin(theta1)
-            y1 = -L1*np.cos(theta1)
-            x2 = x1 + L2*np.sin(theta2)
-            y2 = y1-L2*np.cos(theta2)
+        a2 = (-m2 * L2 * omega2 ** 2 * np.sin(delta) * np.cos(delta) +
+              (m1 + m2) * g * np.sin(theta1) * np.cos(delta) -
+              (m1 + m2) * L1 * omega1 ** 2 * np.sin(delta) -
+              (m1 + m2) * g * np.sin(theta2)) / mian2
+        omega1 += a1 * dt
+        omega2 += a2 * dt
+        theta1 += omega1 * dt
+        theta2 += omega2 * dt
+        x1 = L1*np.sin(theta1)
+        y1 = -L1*np.cos(theta1)
+        x2 = x1 + L2*np.sin(theta2)
+        y2 = y1-L2*np.cos(theta2)
         
-            x1_wart.append(x1)
-            x2_wart.append(x2)
-            y1_wart.append(y1)
-            y2_wart.append(y2)
+        x1_wart.append(x1)
+        x2_wart.append(x2)
+        y1_wart.append(y1)
+        y2_wart.append(y2)
         
-            theta1_wart.append(theta1)
-            theta2_wart.append(theta2)
+        theta1_wart.append(theta1)
+        theta2_wart.append(theta2)
 
-        return x1_wart, x2_wart, y1_wart, y2_wart
-    
-    def calculate():
-        try:
-            m1_value = float(m1.get())
-            m2_value = float(m2.get())
-            g_value = float(g.get())
-            L1_value = float(L1.get())
-            L2_value = float(L2.get())
-            theta1_value = float(theta1.get())
-            theta2_value = float(theta2.get())
-            x1, x2, y1, y2 = liczenie_a(m1_value, m2_value, g_value, L1_value, L2_value, theta1_value, theta2_value)
-            result_label.config(text=f"x1: {x1[-1]:.2f}, y1: {y1[-1]:.2f}, x2: {x2[-1]:.2f}, y2: {y2[-1]:.2f}")
-        except ValueError:
-            result_label.config(text="Proszę wprowadzić poprawne liczby.")
+    return x1_wart, x2_wart, y1_wart, y2_wart
 
-# Główne okno aplikacji
-    wartosc = Tk()
-    wartosc.title("Symulacja Podwójnego Wahadła")
+# Initial parameters
+m1, m2 = 1.0, 1.0
+L1, L2 = 1.0, 1.0
+theta1, theta2 = 45, 30
+g = 9.81
 
-    # Tworzenie pól wprowadzania i przycisków
-    Label(wartosc, text="Masa 1 (m1):").grid(row=0, column=0)
-    m1 = Entry(wartosc)
-    m1.grid(row=0, column=1)
-    Label(wartosc, text="Masa 2 (m2):").grid(row=1, column=0)
-    m2 = Entry(wartosc)
-    m2.grid(row=1, column=1)
-    Label(wartosc, text="Długość 1 (L1):").grid(row=2, column=0)
-    L1 = Entry(wartosc)
-    L1.grid(row=2, column=1)
-    Label(wartosc, text="Długość 2 (L2):").grid(row=3, column=0)
-    L2 = Entry(wartosc)
-    L2.grid(row=3, column=1)
-    Label(wartosc, text="Kąt początkowy 1 (theta1):").grid(row=4, column=0)
-    theta1 = Entry(wartosc)
-    theta1.grid(row=4, column=1)
-    Label(wartosc, text="Kąt początkowy 2 (theta2):").grid(row=5, column=0)
-    theta2 = Entry(wartosc)
-    theta2.grid(row=5, column=1)
-    Label(wartosc, text="Przyspieszenie grawitacyjne (g):").grid(row=6, column=0)
-    g = Entry(wartosc)
-    g.grid(row=6, column=1)
+# Calculate initial values
+x1, x2, y1, y2 = liczenie_a(m1, m2, g, L1, L2, theta1, theta2)
 
-    # Przycisk zatwierdzający
-    klik = Button(wartosc, text="Zatwierdź", command=calculate)
-    klik.grid(row=7, columnspan=2)
 
-    # Pole na wynik
-    result_label = Label(wartosc, text="")
-    result_label.grid(row=8, columnspan=2)
+fig, ax = plt.subplots(figsize=(L1+L2,L1+L2))
+fig.subplots_adjust(left=0.15, bottom=0.5)  # Adjust space for inputs
+ax.set_xlim(-L1 - L2 - 2, L1 + L2 + 2)
+ax.set_ylim(-L1 - L2 - 2, L1 + L2 + 2)
+ax.set_aspect('equal')  # Ensure square plot
+linia, = ax.plot([], [], 'o-', lw=2)
+trajektoria, = ax.plot([], [], 'r-', lw=0.5, alpha=0.5)
 
-    wartosc.mainloop()
+# Initialize the animation
+def init():
+    linia.set_data([], [])
+    trajektoria.set_data([], [])
+    return linia, trajektoria
+
+
+# Update function for animation
+def update(frame):
+    x = [0, x1[frame], x2[frame]]
+    y = [0, y1[frame], y2[frame]]
+    linia.set_data(x, y)
+    trajektoria.set_data(x2[:frame], y2[:frame])
+    return linia, trajektoria
+
+
+# Update parameters using text boxes
+def update_params(val=None):
+    global m1, m2, L1, L2, theta1, theta2, g, x1, x2, y1, y2
+    try:
+        m1 = float(text_m1.text)
+        m2 = float(text_m2.text)
+        L1 = float(text_L1.text)
+        L2 = float(text_L2.text)
+        theta1 = float(text_theta1.text)
+        theta2 = float(text_theta2.text)
+        g = float(text_g.text)
+    except ValueError:
+        return
 
     x1, x2, y1, y2 = liczenie_a(m1, m2, g, L1, L2, theta1, theta2)
+    max_range = max(L1 + L2 + 2, abs(min(x1)), abs(max(x1)), abs(min(y1)), abs(max(y1)))
+    ax.set_xlim(-max_range, max_range)
+    ax.set_ylim(-max_range, max_range)
+    ax.set_aspect('equal', adjustable='datalim')  # Ensure square plot
+    linia.set_data([], [])
+    trajektoria.set_data([], [])
+    fig.canvas.draw_idle()
 
-    fig, ax = plt.subplots()
-    ax.set_xlim(-L1-L2-1,L1+L2+1)
-    ax.set_ylim(-L1-L2-1,L1+L2+1)
-    linia, = ax.plot([], [], 'o-', lw=2) #musi byc przecinek bo linia, tworzy obj Line2D używany w matplitlib i funcanim - bez "," tworzy sie lista a nie obj do animacji
-    trajektoria, = ax.plot([], [], 'r-', lw=0.5, alpha=0.5)
 
-    def init():
-        linia.set_data([], [])
-        trajektoria.set_data([], [])
-        return linia, trajektoria
+# Create text boxes for inputs
+ax_m1 = fig.add_axes([0.15, 0.30, 0.1, 0.04])
+text_m1 = TextBox(ax_m1, 'Masa 1', initial=str(m1))
 
-    def update(frame):
-        x = [0, x1[frame], x2[frame]]
-        y = [0, y1[frame], y2[frame]]
-        linia.set_data(x, y)
-        trajektoria.set_data(x2[:frame], y2[:frame])
-        return linia, trajektoria
+ax_m2 = fig.add_axes([0.35, 0.30, 0.1, 0.04])
+text_m2 = TextBox(ax_m2, 'Masa 2', initial=str(m2))
 
-    ani = FuncAnimation(fig, update, frames=len(x1), init_func=init, blit=True, interval=0.001)
+ax_L1 = fig.add_axes([0.15, 0.25, 0.1, 0.04])
+text_L1 = TextBox(ax_L1, 'Długość 1', initial=str(L1))
 
-    plt.show()
+ax_L2 = fig.add_axes([0.35, 0.25, 0.1, 0.04])
+text_L2 = TextBox(ax_L2, 'Długość 2', initial=str(L2))
 
-master = Tk()
-przycisk = Button(master, text="Start", command=matrix)
-przycisk.pack()
-mainloop()
+ax_theta1 = fig.add_axes([0.15, 0.2, 0.1, 0.04])
+text_theta1 = TextBox(ax_theta1, 'Kąt 1', initial=str(theta1))
+
+ax_theta2 = fig.add_axes([0.35, 0.2, 0.1, 0.04])
+text_theta2 = TextBox(ax_theta2, 'Kąt 2', initial=str(theta2))
+
+ax_g = fig.add_axes([0.15, 0.15, 0.1, 0.04])
+text_g = TextBox(ax_g, 'Grawitacja', initial=str(g))
+
+# Connect text boxes to update function
+for box in [text_m1, text_m2, text_L1, text_L2, text_theta1, text_theta2, text_g]:
+    box.on_submit(update_params)
+
+
+# Buttons to stop and reset animation
+anim_running = True
+
+
+def toggle_animation(event):
+    global anim_running
+    if anim_running:
+        ani.event_source.stop()
+    else:
+        ani.event_source.start()
+    anim_running = not anim_running
+
+
+ax_button_stop = plt.axes([0.8, 0.1, 0.1, 0.04])
+button_stop = Button(ax_button_stop, 'Start/Stop')
+button_stop.on_clicked(toggle_animation)
+
+
+def reset_animation(event):
+    global x1, x2, y1, y2, ani
+    x1, x2, y1, y2 = liczenie_a(m1, m2, g, L1, L2, theta1, theta2)
+    linia.set_data([], [])
+    trajektoria.set_data([], [])
+    ani.event_source.stop()
+    ani = FuncAnimation(fig, update, frames=len(x1), init_func=init, blit=True, interval=1)
+    fig.canvas.draw_idle()
+
+
+ax_button_reset = plt.axes([0.6, 0.1, 0.1, 0.04])
+button_reset = Button(ax_button_reset, 'Reset')
+button_reset.on_clicked(reset_animation)
+
+# Run the animation
+ani = FuncAnimation(fig, update, frames=len(x1), init_func=init, blit=True, interval=1)
+plt.show()
