@@ -138,7 +138,7 @@ buttreset = Button(ax_buttreset, 'Reset')
 
 # Stan animacji
 anim_running = [True] 
-current_frame = [0] 
+
 ani = None
 
 def init():
@@ -148,9 +148,6 @@ def init():
     return linia, trajektoria, timer
 
 def update(frame):
-    if not anim_running[0]:  # Jeśli animacja jest zatrzymana, zwróć aktualne obiekty
-        return linia, trajektoria, timer
-    current_frame[0] = frame
     time = frame * 0.0036
     x = [0, x1[frame], x2[frame]]
     y = [0, y1[frame], y2[frame]]
@@ -160,7 +157,7 @@ def update(frame):
     return linia, trajektoria, timer
 
 def toggle_animation(event):
-    global ani
+   
     if anim_running[0]:
         ani.event_source.stop()
         anim_running[0] = False
@@ -170,12 +167,13 @@ def toggle_animation(event):
 def reset_animation(event):
     """Funkcja resetująca animację"""
     global ani
-    ani.event_source.stop()  # Zatrzymujemy animację
-    anim_running[0] = False  # Ustawiamy stan animacji na zatrzymaną
-    current_frame[0] = 0  # Zresetuj licznik klatek
-    # Utwórz animację od nowa
+    if ani is not None:
+        ani.event_source.stop()  # Zatrzymujemy animację
+     
+    init()
     ani = FuncAnimation(fig, update, frames=len(x1), init_func=init, blit=True, interval=0.001)
-    fig.canvas.draw_idle()  # Odśwież wykres
+    fig.canvas.draw_idle()  # Odświeżenie płótna
+    ani.event_source.start()
 
 buttstartstop.on_clicked(toggle_animation)
 buttreset.on_clicked(reset_animation)
